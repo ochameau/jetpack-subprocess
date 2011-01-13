@@ -1,0 +1,10 @@
+{
+    "name": "subprocess", 
+    "license": "GPL 2.0", 
+    "author": "Alexandre Poirot", 
+    "version": "0.1", 
+    "dependencies": [
+      "api-utils"
+    ], 
+    "description": "Addon-sdk package for subprocess xpcom components from enigmail. Allow to run process, manipulate stdin/out and kill it."
+}

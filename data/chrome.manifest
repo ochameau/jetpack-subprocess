@@ -1,0 +1,14 @@
+# Enigmail IPC stuff
+
+## Gecko 2.0 interface specifiacations
+interfaces  ipc.xpt
+
+## Gecko 2.0 binary components
+# Linux x86-32
+binary-component platform/Linux_x86-gcc3/components/libipc-x86-gcc3.so ABI=Linux_x86-gcc3
+
+# Linux x86-64
+binary-component platform/Linux_x86_64-gcc3/components/libipc-x86_64-gcc3.so ABI=Linux_x86_64-gcc3
+
+# Windows
+binary-component platform/WINNT_x86-msvc/components/ipc-x86-msvc.dll ABI=WINNT_x86-msvc
