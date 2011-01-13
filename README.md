@@ -1,9 +1,9 @@
-<b>What's that?</b>
+<h2>What's that?</h2>
 Simply package enigmail hard work on providing IPC feature in mozilla platform.
 So we are able to launch child proccesses from javascript,
 and in our case, from addon-sdk libraries :)
 
-<b>Sample of code:</b>
+<h2>Sample of code:</h2>
 
     const subprocess = require("subprocess");
     var p = subprocess.call({
@@ -31,7 +31,7 @@ and in our case, from addon-sdk libraries :)
     });
 
 
-<b>Credits:</b>
-All enigmail team working on IPC component.
-  Patrick Brunschwig (author of almost all code) <patrick@mozilla-enigmail.org>,
-  Ramalingam Saravanan (from enigmail team) <svn@xmlterm.org>
+<h2>Credits:</h2>
+All enigmail team working on IPC component.<br/>
+  Patrick Brunschwig (author of almost all code) <patrick@mozilla-enigmail.org>,<br/>
+  Ramalingam Saravanan (from enigmail team) <svn@xmlterm.org><br/>
