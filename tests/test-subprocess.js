@@ -45,8 +45,8 @@ exports.testWindows = function (test) {
 }
 
 // Not tested ... but should work :-p
-if (env.get('OSTYPE') && env.get('OSTYPE').match(/linux|gnu/))
-exports.testWindows = function (test) {
+if (env.get('USER') && env.get('SHELL')) 
+exports.testLinux = function (test) {
   test.waitUntilDone();
   let envTestValue = "OK";
   let gotStdout = false;
@@ -54,18 +54,18 @@ exports.testWindows = function (test) {
   
   var p = subprocess.call({
     // Hope that we don't have to give absolute path on linux ...
-    command:     'echo',
+    command:     '/bin/sh',
     // Print stdin and our env variable
-    arguments:   ['$@', '$ENV_TEST'],
+    //arguments:   ['-c', 'echo $@ $ENV_TEST'],
     environment: ['ENV_TEST='+envTestValue],
     
     stdin: subprocess.WritablePipe(function() {
-      this.write("stdin");
+      this.write("echo $ENV_TEST");
       this.close();
     }),
     stdout: subprocess.ReadablePipe(function(data) {
       test.assert(!gotStdout,"don't get stdout twice");
-      test.assertEqual(data,stdin+" "+envTestValue,"stdout contains the environnement variable");
+      test.assertEqual(data,envTestValue+"\n","stdout contains the environnement variable");
       gotStdout = true;
     }),
     stderr: subprocess.ReadablePipe(function(data) {
