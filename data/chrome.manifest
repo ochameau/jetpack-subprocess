@@ -12,3 +12,9 @@ binary-component platform/Linux_x86_64-gcc3/components/libipc-x86_64-gcc3.so ABI
 
 # Windows
 binary-component platform/WINNT_x86-msvc/components/ipc-x86-msvc.dll ABI=WINNT_x86-msvc
+
+# Mac OS X x86-32
+binary-component platform/Darwin_x86-gcc3/components/libipc-x86-gcc3.dylib ABI=Darwin_x86-gcc3
+
+# Mac OS X x86-64
+binary-component platform/Darwin_x86_64-gcc3/components/libipc-x86_64-gcc3.dylib ABI=Darwin_x86_64-gcc3
