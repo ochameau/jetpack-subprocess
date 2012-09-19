@@ -1,5 +1,5 @@
 const { Cc, Ci } = require("chrome");
-const subprocess = require("subprocess").subprocess;
+const subprocess = require("subprocess");
 const env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
 
 // For now, only test on windows
