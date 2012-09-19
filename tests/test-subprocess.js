@@ -1,5 +1,5 @@
 const { Cc, Ci } = require("chrome");
-const subprocess = require("subprocess");
+const subprocess = require("subprocess").subprocess;
 const env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
 
 // For now, only test on windows
@@ -18,27 +18,27 @@ exports.testWindows = function (test) {
     // Printing an environnement variable set here by the parent process
     environment: ['ENV_TEST='+envTestValue],
     
-    stdin: subprocess.WritablePipe(function() {
+    stdin: function(stdin) {
       // Win32 command line is not really made for stdin
       // So it doesn't seems to work as it's hard to retrieve stdin
-      this.write("stdin");
-      this.close();
-    }),
-    stdout: subprocess.ReadablePipe(function(data) {
+      stdin.write("stdin");
+      stdin.close();
+    },
+    stdout: function(data) {
       test.assert(!gotStdout,"don't get stdout twice");
       test.assertEqual(data,envTestValue+"\r\n","stdout contains the environnement variable");
       gotStdout = true;
-    }),
-    stderr: subprocess.ReadablePipe(function(data) {
+    },
+    stderr: function(data) {
       test.assert(!gotStderr,"don't get stderr twice");
       test.assertEqual(data,"","stderr is empty");
       gotStderr = true;
-    }),
-    onFinished: subprocess.Terminate(function() {
+    },
+    done: function() {
       test.assert(gotStdout, "got stdout before finished");
       test.assert(gotStderr, "got stderr before finished");
       test.done();
-    }),
+    },
     mergeStderr: false
   });
   
@@ -59,25 +59,25 @@ exports.testLinux = function (test) {
     //arguments:   ['-c', 'echo $@ $ENV_TEST'],
     environment: ['ENV_TEST='+envTestValue],
     
-    stdin: subprocess.WritablePipe(function() {
-      this.write("echo $ENV_TEST");
-      this.close();
-    }),
-    stdout: subprocess.ReadablePipe(function(data) {
+    stdin: function(stdin) {
+      stdin.write("echo $ENV_TEST");
+      stdin.close();
+    },
+    stdout: function(data) {
       test.assert(!gotStdout,"don't get stdout twice");
       test.assertEqual(data,envTestValue+"\n","stdout contains the environnement variable");
       gotStdout = true;
-    }),
-    stderr: subprocess.ReadablePipe(function(data) {
+    },
+    stderr: function(data) {
       test.assert(!gotStderr,"don't get stderr twice");
       test.assertEqual(data,"","stderr is empty");
       gotStderr = true;
-    }),
-    onFinished: subprocess.Terminate(function() {
+    },
+    done: function() {
       test.assert(gotStdout, "got stdout before finished");
       test.assert(gotStderr, "got stderr before finished");
       test.done();
-    }),
+    },
     mergeStderr: false
   });
   
