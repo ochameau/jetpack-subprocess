@@ -46,7 +46,7 @@ exports.testWindows = function (test) {
 
 // Not tested ... but should work :-p
 if (env.get('USER') && env.get('SHELL')) 
-exports.testLinux = function (test) {
+exports.testUnix = function (test) {
   test.waitUntilDone();
   let envTestValue = "OK";
   let gotStdout = false;
