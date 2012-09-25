@@ -26,7 +26,7 @@ exports.testWindows = function (test) {
     },
     stdout: function(data) {
       test.assert(!gotStdout,"don't get stdout twice");
-      test.assertEqual(data,envTestValue+"\r\n","stdout contains the environnement variable");
+      test.assertEqual(data,envTestValue+"\r\n","stdout contains the environment variable");
       gotStdout = true;
     },
     stderr: function(data) {
@@ -44,8 +44,8 @@ exports.testWindows = function (test) {
   
 }
 
-// Not tested ... but should work :-p
-if (env.get('USER') && env.get('SHELL')) 
+if (env.get('USER') && env.get('SHELL')) {
+
 exports.testUnix = function (test) {
   test.waitUntilDone();
   let envTestValue = "OK";
@@ -53,7 +53,6 @@ exports.testUnix = function (test) {
   let gotStderr = false;
   
   var p = subprocess.call({
-    // Hope that we don't have to give absolute path on linux ...
     command:     '/bin/sh',
     // Print stdin and our env variable
     //arguments:   ['-c', 'echo $@ $ENV_TEST'],
@@ -65,20 +64,39 @@ exports.testUnix = function (test) {
     },
     stdout: function(data) {
       test.assert(!gotStdout,"don't get stdout twice");
-      test.assertEqual(data,envTestValue+"\n","stdout contains the environnement variable");
+      test.assertEqual(data,envTestValue+"\n","stdout contains the environment variable");
       gotStdout = true;
-    },
-    stderr: function(data) {
-      test.assert(!gotStderr,"don't get stderr twice");
-      test.assertEqual(data,"","stderr is empty");
-      gotStderr = true;
     },
     done: function() {
       test.assert(gotStdout, "got stdout before finished");
+      test.assert(!gotStderr, "didn't get stderr");
+      test.done();
+    },
+    mergeStderr: false
+  });
+}
+
+exports.testUnixStderr = function (test) {
+  test.waitUntilDone();
+  let gotStderr = false;
+
+  var p = subprocess.call({
+    // Hope that we don't have to give absolute path on linux ...
+    command:     '/bin/sh',
+    arguments:   ['nonexistent'],
+
+    stderr: function(data) {
+      test.assert(!gotStderr,"don't get stderr twice");
+      test.assertEqual(data,"/bin/sh: nonexistent: No such file or directory\n",
+                       "stderr contains the error message");
+      gotStderr = true;
+    },
+    done: function() {
       test.assert(gotStderr, "got stderr before finished");
       test.done();
     },
     mergeStderr: false
   });
-  
+}
+
 }
