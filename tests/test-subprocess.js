@@ -3,12 +3,12 @@ const subprocess = require("subprocess");
 const env = Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment);
 
 // For now, only test on windows
-if (env.get('OS') && env.get('OS').match(/Windows/))
+if (env.get('OS') && env.get('OS').match(/Windows/)) {
+
 exports.testWindows = function (test) {
   test.waitUntilDone();
   let envTestValue = "OK";
   let gotStdout = false;
-  let gotStderr = false;
   
   var p = subprocess.call({
     // Retrieve windows cmd.exe path from env
@@ -30,12 +30,39 @@ exports.testWindows = function (test) {
       gotStdout = true;
     },
     stderr: function(data) {
-      test.assert(!gotStderr,"don't get stderr twice");
-      test.assertEqual(data,"","stderr is empty");
-      gotStderr = true;
+      test.fail("shouldn't get stderr");
     },
     done: function() {
       test.assert(gotStdout, "got stdout before finished");
+      test.done();
+    },
+    mergeStderr: false
+  });
+  
+}
+
+exports.testWindowsStderr = function (test) {
+  test.waitUntilDone();
+  let gotStderr = false;
+
+  var p = subprocess.call({
+    command:     env.get('ComSpec'),
+    arguments:   ['/C', 'nonexistent'],
+
+    stdout: function(data) {
+      test.fail("shouldn't get stdout");
+    },
+    stderr: function(data) {
+      test.assert(!gotStderr,"don't get stderr twice");
+      test.assertEqual(
+        data,
+        "'nonexistent' is not recognized as an internal or external command,\r\n" +
+        "operable program or batch file.\r\n",
+        "stderr contains the error message"
+      );
+      gotStderr = true;
+    },
+    done: function() {
       test.assert(gotStderr, "got stderr before finished");
       test.done();
     },
@@ -44,13 +71,14 @@ exports.testWindows = function (test) {
   
 }
 
+}
+
 if (env.get('USER') && env.get('SHELL')) {
 
 exports.testUnix = function (test) {
   test.waitUntilDone();
   let envTestValue = "OK";
   let gotStdout = false;
-  let gotStderr = false;
   
   var p = subprocess.call({
     command:     '/bin/sh',
@@ -67,9 +95,11 @@ exports.testUnix = function (test) {
       test.assertEqual(data,envTestValue+"\n","stdout contains the environment variable");
       gotStdout = true;
     },
+    stderr: function(data) {
+      test.fail("shouldn't get stderr");
+    },
     done: function() {
       test.assert(gotStdout, "got stdout before finished");
-      test.assert(!gotStderr, "didn't get stderr");
       test.done();
     },
     mergeStderr: false
@@ -85,6 +115,9 @@ exports.testUnixStderr = function (test) {
     command:     '/bin/sh',
     arguments:   ['nonexistent'],
 
+    stdout: function(data) {
+      test.fail("shouldn't get stdout");
+    },
     stderr: function(data) {
       test.assert(!gotStderr,"don't get stderr twice");
       test.assertEqual(data,"/bin/sh: nonexistent: No such file or directory\n",
