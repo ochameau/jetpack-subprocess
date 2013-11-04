@@ -120,8 +120,12 @@ exports.testUnixStderr = function (test) {
     },
     stderr: function(data) {
       test.assert(!gotStderr,"don't get stderr twice");
-      test.assertEqual(data,"/bin/sh: nonexistent: No such file or directory\n",
-                       "stderr contains the error message");
+      // There is two variant of error message
+      if (data == "/bin/sh: 0: Can't open nonexistent\n")
+        test.pass("stderr containes the expected error message");
+      else
+        test.assertEqual(data, "/bin/sh: nonexistent: No such file or directory\n",
+                         "stderr contains the error message");
       gotStderr = true;
     },
     done: function() {
