@@ -13,20 +13,20 @@ and in our case, from addon-sdk libraries :)
       arguments:   ['$@', '$ENV_TEST'],
       environment: ['ENV_TEST=OK'],
       
-      stdin: subprocess.WritablePipe(function() {
-        this.write("stdin");
-        this.close();
-      }),
-      stdout: subprocess.ReadablePipe(function(data) {
+      stdin: function(stdin) {
+        stdin.write("stdin");
+        stdin.close();
+      },
+      stdout: function(data) {
         // data should be equal to: "stdin OK"
         
-      }),
-      stderr: subprocess.ReadablePipe(function(data) {
+      },
+      stderr: function(data) {
         
-      }),
-      onFinished: subprocess.Terminate(function() {
-        
-      }),
+      },
+      done: function(result) {
+         console.log("process terminated with " + result.exitCode + "\n");
+      },
       mergeStderr: false
     });
 
